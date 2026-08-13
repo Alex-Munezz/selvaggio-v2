@@ -6,13 +6,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        forest: "#19352a",
-        "deep-forest": "#0d1d17",
-        gold: "#c8a45d",
-        "gold-light": "#dfc27f",
-        cream: "#f6f3ec",
+        forest: "#19352A",
+        "deep-forest": "#0D1D17",
+        gold: "#C8A45D",
+        "gold-light": "#DFC27F",
+        cream: "#F6F3EC",
         charcoal: "#171916",
       },
+
       fontFamily: {
         sans: ["DM Sans", "sans-serif"],
         serif: ["Playfair Display", "serif"],
