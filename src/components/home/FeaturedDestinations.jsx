@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
-import maraImage from "../../assets/mara.JPG";
-import amboseliImage from "../../assets/amboseli.jpg";
-import nairobiImage from "../../assets/nairobi.JPG";
+import maraImage from "../../assets/optimized/mara.webp";
+import amboseliImage from "../../assets/optimized/amboseli.webp";
+import nairobiImage from "../../assets/optimized/nairobi.webp";
 
 const destinations = [
   {
@@ -89,6 +89,8 @@ export default function FeaturedDestinations() {
               src={destinations[0].image}
               alt={destinations[0].name}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
             />
 
             {/* Overlay */}

@@ -1,11 +1,5 @@
 import { motion } from "framer-motion";
-import {
-  FiArrowLeft,
-  FiArrowRight,
-  FiCalendar,
-  FiCheck,
-  FiMapPin,
-} from "react-icons/fi";
+import { FiArrowLeft, FiArrowRight, FiCalendar, FiCheck, FiMapPin,} from "react-icons/fi";
 import { Link, useParams } from "react-router-dom";
 
 import packages from "../data/packages";
@@ -269,7 +263,7 @@ export default function PackageDetail() {
             </div>
 
             <Link
-              to="/book"
+              to={`/book?package=${packages.id}`}
               className="group inline-flex w-fit shrink-0 items-center gap-3 bg-gold px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-deep-forest transition-colors hover:bg-gold-light"
             >
               Enquire About This Safari

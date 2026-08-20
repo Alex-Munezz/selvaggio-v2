@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { FiArrowRight, FiPhone } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
-import guestsImage from "../../assets/guests.JPG";
+import guestsImage from "../../assets/optimized/guests.webp";
 
 export default function BookingCTA() {
   return (
@@ -13,6 +13,8 @@ export default function BookingCTA() {
           src={guestsImage}
           alt="Guests enjoying a safari experience in Kenya"
           className="h-full w-full object-cover object-center"
+          loading="lazy"
+          decoding="async"
         />
 
         {/* Cinematic overlays */}
