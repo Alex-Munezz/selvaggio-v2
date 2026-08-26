@@ -6,11 +6,13 @@ import WhySelvaggio from "../components/home/WhySelvaggio";
 import FeaturedPackages from "../components/home/FeaturedPackages";
 import Testimonials from "../components/home/Testimonials";
 import BookingCTA from "../components/home/BookingCTA";
+import LastMinuteBookings from '../components/home/LastMinuteBookings';
 
 export default function Home() {
   return (
     <>
       <Hero />
+      <LastMinuteBookings />
       <Intro />
       <FeaturedDestinations />
       <Experiences />

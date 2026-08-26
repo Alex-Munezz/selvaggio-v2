@@ -9,6 +9,13 @@ import Packages from "./pages/Packages";
 import PackageDetail from "./pages/PackagesDetail";
 import Contact from "./pages/Contact";
 import Book from "./pages/Book";
+import Floating from "./components/shared/FloatingActions";
+import Payment from "./pages/Payment";
+import Success from "./pages/Success";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminBookingDetail from "./pages/admin/AdminBookingDetail";
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 
 function App() {
   return (
@@ -38,7 +45,32 @@ function App() {
           <Route path="/contact" element={<Contact />} />
 
           <Route path="/book" element={<Book />} />
+          <Route
+  path="/success"
+  element={<Success />}
+/>
+          <Route
+  path="/payment/:reference"
+  element={<Payment />}
+/>
+<Route
+  path="/admin/login"
+  element={<AdminLogin />}
+/>
+
+<Route element={<AdminProtectedRoute />}>
+  <Route
+    path="/admin/bookings"
+    element={<AdminBookings />}
+  />
+
+  <Route
+    path="/admin/bookings/:reference"
+    element={<AdminBookingDetail />}
+  />
+</Route>
         </Routes>
+    <Floating />
       </SiteLayout>
     </BrowserRouter>
   );

@@ -22,8 +22,12 @@ def serialize_price(price):
     return {
         "id": price.id,
         "season_name": price.season_name,
-        "start_date": price.start_date.isoformat(),
-        "end_date": price.end_date.isoformat(),
+        "start_date": (price.start_date.isoformat()
+                       if price.start_date
+                       else None),
+        "end_date": (price.end_date.isoformat()
+                     if price.end_date
+                     else None),
         "currency": price.currency,
         "accommodation_level": price.accommodation_level,
         "price_1_pax": (
@@ -130,11 +134,12 @@ def get_packages():
     ], 200
 
 
-@packages_bp.route("/<string:slug>", methods=["GET"])
-def get_package(slug):
-    package = Package.query.filter_by(
-        slug=slug
-    ).first_or_404()
+@packages_bp.route("/<int:package_id>", methods=["GET"])
+def get_package_by_id(package_id):
+    package = db.session.get(Package, package_id)
+
+    if not package:
+        return {"error": "Package not found"}, 404
 
     return serialize_package(package), 200
 

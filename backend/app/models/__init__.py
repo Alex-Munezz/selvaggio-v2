@@ -4,3 +4,4 @@ from app.models.booking import Booking
 from app.models.payment import Payment
 from app.models.package_itinerary import PackageItinerary
 from app.models.package_price import PackagePrice
+from app.models.admin_user import AdminUser

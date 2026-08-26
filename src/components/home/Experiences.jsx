@@ -6,7 +6,7 @@ import {
   FiHeart,
   FiMap,
 } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const experiences = [
   {
@@ -40,8 +40,10 @@ const experiences = [
 ];
 
 export default function Experiences() {
+  const navigate = useNavigate();
+
   return (
-    <section className="bg-deep-forest px-6 py-24 text-white sm:py-32 lg:px-8 lg:py-40">
+    <section className="bg-[#111111] px-6 py-24 text-white sm:py-32 lg:px-8 lg:py-40">
       <div className="mx-auto max-w-7xl">
         {/* Heading */}
         <motion.div
@@ -53,9 +55,9 @@ export default function Experiences() {
         >
           <div>
             <div className="flex items-center gap-4">
-              <span className="h-px w-12 bg-gold" />
+              <span className="h-px w-12 bg-[#c4a454]" />
 
-              <span className="text-xs font-semibold uppercase tracking-[0.35em] text-gold">
+              <span className="text-xs font-semibold uppercase tracking-[0.35em] text-[#c4a454]">
                 Beyond the Safari
               </span>
             </div>
@@ -68,7 +70,7 @@ export default function Experiences() {
           <div>
             <h2 className="max-w-3xl font-serif text-4xl leading-[1.08] sm:text-5xl lg:text-6xl">
               More than a destination.
-              <span className="block italic text-gold-light">
+              <span className="block italic text-[#e6d69a]">
                 An experience.
               </span>
             </h2>
@@ -93,13 +95,13 @@ export default function Experiences() {
                 className="group grid gap-6 border-b border-white/10 py-8 transition-colors duration-300 hover:bg-white/[0.025] md:grid-cols-[80px_0.7fr_1fr_60px] md:items-center md:px-5"
               >
                 {/* Number */}
-                <span className="text-xs font-semibold tracking-[0.2em] text-gold/70">
+                <span className="text-xs font-semibold tracking-[0.2em] text-[#c4a454]/70">
                   {experience.number}
                 </span>
 
                 {/* Title */}
                 <div className="flex items-center gap-5">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 text-gold transition-all duration-300 group-hover:border-gold group-hover:bg-gold group-hover:text-deep-forest">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 text-[#c4a454] transition-all duration-300 group-hover:border-[#c4a454] group-hover:bg-[#c4a454] group-hover:text-black">
                     <Icon size={20} strokeWidth={1.5} />
                   </span>
 
@@ -113,14 +115,15 @@ export default function Experiences() {
                   {experience.description}
                 </p>
 
-                {/* Arrow */}
-                <Link
-                  to="/experiences"
+                {/* Arrow button */}
+                <button
+                  type="button"
+                  onClick={() => navigate("/experiences")}
                   aria-label={`Explore ${experience.title}`}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white/60 transition-all duration-300 group-hover:border-gold group-hover:bg-gold group-hover:text-deep-forest"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white/60 transition-all duration-300 group-hover:border-[#c4a454] group-hover:bg-[#c4a454] group-hover:text-black"
                 >
                   <FiArrowUpRight size={18} />
-                </Link>
+                </button>
               </motion.div>
             );
           })}
@@ -139,17 +142,18 @@ export default function Experiences() {
             shape the journey around you.
           </p>
 
-          <Link
-            to="/experiences"
-            className="group inline-flex w-fit items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-gold transition-colors hover:text-gold-light"
+          <button
+            type="button"
+            onClick={() => navigate("/experiences")}
+            className="group inline-flex w-fit items-center gap-3 bg-[#c4a454] px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-black transition-all duration-300 hover:bg-[#e6d69a]"
           >
-            Discover our experiences
+            Discover Our Experiences
 
             <FiArrowUpRight
               size={17}
               className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
             />
-          </Link>
+          </button>
         </motion.div>
       </div>
     </section>
