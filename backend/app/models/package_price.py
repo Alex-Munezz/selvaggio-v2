@@ -48,6 +48,8 @@ class PackagePrice(db.Model):
     price_5_pax = db.Column(db.Numeric(10, 2), nullable=True)
     price_6_pax = db.Column(db.Numeric(10, 2), nullable=True)
     child_price = db.Column(db.Numeric(10, 2), nullable=True)
+    price_7_pax = db.Column(db.Numeric(10, 2), nullable=True)
+    price_8_pax = db.Column(db.Numeric(10, 2), nullable=True)
 
     created_at = db.Column(
         db.DateTime,

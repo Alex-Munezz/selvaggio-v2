@@ -23,7 +23,10 @@ package_destinations = db.Table(
 class Package(db.Model):
     __tablename__ = "packages"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
 
     name = db.Column(
         db.String(150),
@@ -61,8 +64,26 @@ class Package(db.Model):
         nullable=True,
     )
 
-    # Optional "from" price for frontend cards.
-    # Full seasonal/group pricing will live in a separate table.
+    # -----------------------------------------------------
+    # PRICING MODE
+    #
+    # fixed:
+    #   Package uses PackagePrice records and can
+    #   calculate a booking total automatically.
+    #
+    # quote:
+    #   Booking is created without an automatic total.
+    #   A consultant later provides the final quote.
+    # -----------------------------------------------------
+
+    pricing_mode = db.Column(
+        db.String(20),
+        nullable=False,
+        default="fixed",
+        server_default="fixed",
+    )
+
+    # Optional "from" price for cards.
     price = db.Column(
         db.Numeric(10, 2),
         nullable=True,

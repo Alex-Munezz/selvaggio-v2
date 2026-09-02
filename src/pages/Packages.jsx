@@ -48,7 +48,18 @@ export default function Packages() {
           : data.packages || [];
 
         const activePackages = packageList.filter(
-          (pkg) => pkg.active !== false
+          (pkg) => {
+            const category = String(
+              pkg.category || ""
+            )
+              .trim()
+              .toLowerCase();
+
+            return (
+              pkg.active !== false &&
+              category !== "serve-and-safari"
+            );
+          }
         );
 
         setPackages(activePackages);
@@ -93,24 +104,24 @@ export default function Packages() {
     return "Kenya";
   };
 
-  const getDurationDays = (pkg) => {
-    if (
-      pkg.duration_days !== null &&
-      pkg.duration_days !== undefined
-    ) {
-      return Number(pkg.duration_days);
-    }
+  // const getDurationDays = (pkg) => {
+  //   if (
+  //     pkg.duration_days !== null &&
+  //     pkg.duration_days !== undefined
+  //   ) {
+  //     return Number(pkg.duration_days);
+  //   }
 
-    if (pkg.duration) {
-      const match = String(pkg.duration).match(/\d+/);
+  //   if (pkg.duration) {
+  //     const match = String(pkg.duration).match(/\d+/);
 
-      if (match) {
-        return Number(match[0]);
-      }
-    }
+  //     if (match) {
+  //       return Number(match[0]);
+  //     }
+  //   }
 
-    return null;
-  };
+  //   return null;
+  // };
 
   const formatDuration = (pkg) => {
     if (

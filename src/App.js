@@ -16,6 +16,9 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminBookingDetail from "./pages/admin/AdminBookingDetail";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
+import ServeAndSafari from "./pages/ServeAndSafari";
+import Transfers from "./pages/Transfers";
+import ServeSafariBook from "./pages/ServeSafariBook";
 
 function App() {
   return (
@@ -25,7 +28,10 @@ function App() {
           <Route path="/" element={<Home />} />
 
           <Route path="/about" element={<About />} />
-
+<Route
+  path="/serve-and-safari/book"
+  element={<ServeSafariBook />}
+/>
           <Route path="/destinations" element={<Destinations />} />
 
           <Route
@@ -34,6 +40,7 @@ function App() {
           />
 
           <Route path="/safaris" element={<Safaris />} />
+          <Route path="/transfers" element={<Transfers />} />
 
           <Route path="/packages" element={<Packages />} />
 
@@ -48,6 +55,10 @@ function App() {
           <Route
   path="/success"
   element={<Success />}
+/>
+  <Route
+  path="/serve-and-safari"
+  element={<ServeAndSafari />}
 />
           <Route
   path="/payment/:reference"

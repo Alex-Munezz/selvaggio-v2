@@ -79,9 +79,19 @@ export default function Book() {
           : response.data.packages || [];
 
         setPackages(
-          packageList.filter(
-            (pkg) => pkg.active !== false
-          )
+          packageList.filter((pkg) => {
+            const category = String(
+              pkg.category || ""
+            )
+              .trim()
+              .toLowerCase();
+
+            return (
+              pkg.active !== false &&
+              category !==
+                "serve-and-safari"
+            );
+          })
         );
       } catch (error) {
         setPackagesError(
@@ -166,6 +176,45 @@ setPriceError(
       ) || null
     );
   }, [packages, selectedPackageId]);
+
+  const isDayTrip = useMemo(() => {
+  if (!selectedPackage) return false;
+
+  return (
+    Number(selectedPackage.duration_days) === 1 ||
+    selectedPackage.category === "day-trip"
+  );
+}, [selectedPackage]);
+
+const maxPartySize = useMemo(() => {
+  if (!isDayTrip || !selectedPackage) {
+    return 6;
+  }
+
+  const pricingRows = Array.isArray(
+    selectedPackage.pricing
+  )
+    ? selectedPackage.pricing
+    : [];
+
+  let max = 0;
+
+  pricingRows.forEach((row) => {
+    for (let pax = 1; pax <= 8; pax += 1) {
+      const value =
+        row?.[`price_${pax}_pax`];
+
+      if (
+        value !== null &&
+        value !== undefined
+      ) {
+        max = Math.max(max, pax);
+      }
+    }
+  });
+
+  return max || 6;
+}, [isDayTrip, selectedPackage]);
 
   const formatCategory = (category) => {
     if (!category) return "Safari";
@@ -379,6 +428,16 @@ setPriceError(
       );
 
       setBookingResult(response.data);
+
+      if (
+        response.data.reference &&
+        response.data.payment_access_token
+      ) {
+        sessionStorage.setItem(
+          `selvaggio_payment_access_${response.data.reference}`,
+          response.data.payment_access_token
+        );
+      }
 
       window.scrollTo({
         top: document.body.scrollHeight,
@@ -798,7 +857,17 @@ setPriceError(
                       type="number"
                       name="adults"
                       min="1"
-                      max="6"
+                        max={
+                         isDayTrip
+                           ? Math.max(
+                               1,
+                               maxPartySize -
+                                 Number(
+                                   formData.children || 0
+                                 )
+                             )
+                           : 6
+                       }
                       value={
                         formData.adults
                       }
@@ -824,6 +893,17 @@ setPriceError(
                       type="number"
                       name="children"
                       min="0"
+                        max={
+                         isDayTrip
+                           ? Math.max(
+                               0,
+                               maxPartySize -
+                                 Number(
+                                   formData.adults || 0
+                                 )
+                             )
+                           : undefined
+                       }
                       value={
                         formData.children
                       }
@@ -1170,7 +1250,7 @@ setPriceError(
               </div>
 
             </div>
-            <button
+            {/* <button
   type="button"
   onClick={() =>
     navigate(
@@ -1185,7 +1265,7 @@ setPriceError(
     size={17}
     className="transition-transform duration-300 group-hover:translate-x-1"
   />
-</button>
+</button> */}
           </motion.div>
           
         </section>

@@ -25,7 +25,6 @@ def get_destinations():
             "description": destination.description,
             "image": destination.image,
             "highlights": destination.highlights or [],
-
             "best_time_to_visit": destination.best_time_to_visit,
             "recommended_stay": destination.recommended_stay,
             "climate": destination.climate,

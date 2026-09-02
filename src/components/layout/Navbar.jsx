@@ -39,7 +39,7 @@ const navigation = [
 const safariLinks = [
   {
     label: "Regular Safaris",
-    path: "/safaris",
+    path: "/packages",
     description:
       "Explore our private safari journeys across Kenya.",
   },

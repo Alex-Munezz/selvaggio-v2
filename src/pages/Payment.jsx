@@ -18,6 +18,18 @@ export default function Payment() {
   const { reference } = useParams();
   const navigate = useNavigate();
 
+  const accessToken =
+    sessionStorage.getItem(
+      `selvaggio_payment_access_${reference}`
+    ) || "";
+
+  const accessHeaders = accessToken
+    ? {
+        "X-Booking-Access-Token":
+          accessToken,
+      }
+    : {};
+
   const [booking, setBooking] = useState(null);
   const [payments, setPayments] = useState([]);
 
@@ -46,7 +58,10 @@ export default function Payment() {
       setError("");
 
       const response = await axios.get(
-        `http://127.0.0.1:5000/api/payments/booking/${reference}`
+        `http://127.0.0.1:5000/api/payments/booking/${reference}`,
+        {
+          headers: accessHeaders,
+        }
       );
 
       setBooking(response.data.booking);
@@ -148,6 +163,10 @@ export default function Payment() {
           booking_reference: reference,
           amount: numericAmount,
           provider: "manual",
+          access_token: accessToken,
+        },
+        {
+          headers: accessHeaders,
         }
       );
 
@@ -179,7 +198,13 @@ export default function Payment() {
       setSuccessMessage("");
 
       const response = await axios.patch(
-        `http://127.0.0.1:5000/api/payments/${pendingPayment.id}/confirm`
+        `http://127.0.0.1:5000/api/payments/${pendingPayment.id}/confirm`,
+        {
+          access_token: accessToken,
+        },
+        {
+          headers: accessHeaders,
+        }
       );
 
       setSuccessMessage(

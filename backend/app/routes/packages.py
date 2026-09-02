@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from sqlalchemy import or_
 from flask import Blueprint, request
 
 from app.extensions import db
@@ -60,6 +60,16 @@ def serialize_price(price):
             if price.price_6_pax is not None
             else None
         ),
+        "price_7_pax": (
+            float(price.price_7_pax)
+            if price.price_7_pax is not None
+            else None
+        ),
+         "price_8_pax": (
+            float(price.price_8_pax)
+            if price.price_8_pax is not None
+            else None
+         ),
         "child_price": 
         ( float(price.child_price) 
         if price.child_price is not None 
@@ -85,6 +95,7 @@ def serialize_package(package):
         "short_description": package.short_description,
         "description": package.description,
         "category": package.category,
+        "pricing_mode": package.pricing_mode,
         "duration_days": package.duration_days,
         "duration_nights": package.duration_nights,
         "price": (
@@ -124,9 +135,136 @@ def serialize_package(package):
 
 @packages_bp.route("", methods=["GET"])
 def get_packages():
-    packages = Package.query.order_by(
-        Package.created_at.desc()
-    ).all()
+    query = Package.query
+
+    # -----------------------------------
+    # Query parameters
+    # -----------------------------------
+
+    category = (
+        request.args.get("category")
+        or ""
+    ).strip()
+
+    pricing_mode = (
+        request.args.get("pricing_mode")
+        or ""
+    ).strip().lower()
+
+    active_param = (
+        request.args.get("active")
+        or ""
+    ).strip().lower()
+
+    include_all = (
+        request.args.get("all")
+        or ""
+    ).strip().lower() in {
+        "true",
+        "1",
+        "yes",
+    }
+
+    # -----------------------------------
+    # Category filtering
+    # -----------------------------------
+    #
+    # Important:
+    # Plain /api/packages should return
+    # normal safari packages only.
+    #
+    # Serve & Safari must be requested
+    # explicitly with:
+    #
+    # ?category=serve-and-safari
+    #
+    # Admin tools can request everything
+    # using:
+    #
+    # ?all=true
+    # -----------------------------------
+
+    if category:
+        query = query.filter(
+            Package.category
+            == category
+        )
+
+    elif not include_all:
+        query = query.filter(
+            or_(
+                Package.category.is_(None),
+
+                Package.category
+                != "serve-and-safari",
+            )
+        )
+
+    # -----------------------------------
+    # Pricing mode
+    # -----------------------------------
+
+    if pricing_mode:
+        if pricing_mode not in {
+            "fixed",
+            "quote",
+        }:
+            return {
+                "error":
+                    (
+                        "pricing_mode must be "
+                        "'fixed' or 'quote'"
+                    )
+            }, 400
+
+        query = query.filter(
+            Package.pricing_mode
+            == pricing_mode
+        )
+
+    # -----------------------------------
+    # Active status
+    # -----------------------------------
+
+    if active_param:
+        if active_param in {
+            "true",
+            "1",
+            "yes",
+        }:
+            query = query.filter(
+                Package.active.is_(True)
+            )
+
+        elif active_param in {
+            "false",
+            "0",
+            "no",
+        }:
+            query = query.filter(
+                Package.active.is_(False)
+            )
+
+        else:
+            return {
+                "error":
+                    (
+                        "active must be true "
+                        "or false"
+                    )
+            }, 400
+
+    # -----------------------------------
+    # Results
+    # -----------------------------------
+
+    packages = (
+        query
+        .order_by(
+            Package.created_at.desc()
+        )
+        .all()
+    )
 
     return [
         serialize_package(package)
@@ -181,6 +319,30 @@ def create_package():
         return {
             "error": "A package with this slug already exists"
         }, 409
+
+    pricing_mode = (
+    data.get(
+        "pricing_mode",
+        "fixed",
+    )
+    .strip()
+    .lower()
+)
+
+    valid_pricing_modes = {
+        "fixed",
+        "quote",
+    }
+    
+    if pricing_mode not in valid_pricing_modes:
+        return {
+            "error":
+                "Invalid pricing_mode",
+            "allowed_pricing_modes":
+                sorted(
+                    valid_pricing_modes
+                ),
+        }, 400
 
     # -----------------------------------
     # Duration
@@ -416,6 +578,8 @@ def create_package():
             "price_4_pax",
             "price_5_pax",
             "price_6_pax",
+            "price_7_pax",
+            "price_8_pax",
             "child_price",
         ]
 
@@ -485,6 +649,7 @@ def create_package():
         category=data.get(
             "category"
         ),
+        pricing_mode=pricing_mode,
         duration_days=duration_days,
         duration_nights=duration_nights,
         price=data.get(
@@ -528,14 +693,18 @@ def create_package():
     # -----------------------------------
     # Save everything atomically
     # -----------------------------------
-
+    
     try:
         db.session.add(package)
-
+    
         # Flush gives us package.id
         # without committing yet.
         db.session.flush()
-
+    
+        # -------------------------------
+        # Itinerary
+        # -------------------------------
+    
         for item in itinerary_items:
             itinerary = PackageItinerary(
                 package_id=package.id,
@@ -543,39 +712,54 @@ def create_package():
                 title=item["title"],
                 description=item["description"],
             )
-
+    
             db.session.add(itinerary)
-
-            for item in pricing_items:
-             price = PackagePrice(
+    
+        # -------------------------------
+        # Pricing
+        # -------------------------------
+    
+        for item in pricing_items:
+            price = PackagePrice(
                 package_id=package.id,
                 season_name=item["season_name"],
                 start_date=item["start_date"],
                 end_date=item["end_date"],
                 currency=item["currency"],
-                accommodation_level=item["accommodation_level"],
+                accommodation_level=item[
+                    "accommodation_level"
+                ],
                 price_1_pax=item["price_1_pax"],
                 price_2_pax=item["price_2_pax"],
                 price_3_pax=item["price_3_pax"],
                 price_4_pax=item["price_4_pax"],
                 price_5_pax=item["price_5_pax"],
                 price_6_pax=item["price_6_pax"],
+                price_7_pax=item["price_7_pax"],
+                price_8_pax=item["price_8_pax"],
                 child_price=item["child_price"],
             )
-
+    
             db.session.add(price)
-
+    
+        # IMPORTANT:
+        # These two lines are OUTSIDE both loops.
         db.session.commit()
-
+    
         return {
             "message": "Package created successfully",
             "id": package.id,
             "slug": package.slug,
         }, 201
-
+    
     except Exception as e:
         db.session.rollback()
-
+    
+        print(
+            "Package creation error:",
+            e,
+        )
+    
         return {
             "error": "Unable to create package",
             "details": str(e),
@@ -617,6 +801,33 @@ def update_package(slug):
 
     if "category" in data:
         package.category = data["category"]
+
+    if "pricing_mode" in data:
+        pricing_mode = str(
+            data["pricing_mode"]
+        ).strip().lower()
+    
+        valid_pricing_modes = {
+            "fixed",
+            "quote",
+        }
+    
+        if (
+            pricing_mode
+            not in valid_pricing_modes
+        ):
+            return {
+                "error":
+                    "Invalid pricing_mode",
+                "allowed_pricing_modes":
+                    sorted(
+                        valid_pricing_modes
+                    ),
+            }, 400
+    
+        package.pricing_mode = (
+            pricing_mode
+    )
 
     if "image" in data:
         package.image = data["image"]

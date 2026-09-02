@@ -108,6 +108,22 @@ const paymentClass = (status) => {
 };
 
 
+const typeClass = (type) => {
+  if (type === "serve-and-safari") {
+    return "border border-[#c4a454]/30 bg-[#c4a454]/10 text-[#9f8236]";
+  }
+
+  return "border border-[#111111]/10 bg-white text-[#111111]/45";
+};
+
+
+const formatBookingType = (type) => {
+  return type === "serve-and-safari"
+    ? "Serve & Safari"
+    : "Regular Safari";
+};
+
+
 const capitalize = (value) => {
   if (!value) return "";
 
@@ -143,6 +159,11 @@ export default function AdminBookings() {
     setPaymentStatus,
   ] = useState("");
 
+  const [
+    bookingType,
+    setBookingType,
+  ] = useState("");
+
 
   const fetchBookings =
     useCallback(async () => {
@@ -173,6 +194,16 @@ export default function AdminBookings() {
         params.append(
           "payment_status",
           paymentStatus
+        );
+      }
+
+      if (
+        bookingType ===
+        "serve-and-safari"
+      ) {
+        params.append(
+          "category",
+          "serve-and-safari"
         );
       }
 
@@ -218,8 +249,18 @@ export default function AdminBookings() {
           );
         }
 
+        const bookingList =
+          data.bookings || [];
+
         setBookings(
-          data.bookings || []
+          bookingType ===
+          "regular-safari"
+            ? bookingList.filter(
+                (booking) =>
+                  booking.booking_type !==
+                  "serve-and-safari"
+              )
+            : bookingList
         );
       } catch (error) {
         setError(
@@ -230,6 +271,7 @@ export default function AdminBookings() {
         setLoading(false);
       }
     }, [
+      bookingType,
       navigate,
       paymentStatus,
       search,
@@ -264,13 +306,15 @@ export default function AdminBookings() {
     setSearch("");
     setStatus("");
     setPaymentStatus("");
+    setBookingType("");
   };
 
 
   const hasFilters =
     search.trim() ||
     status ||
-    paymentStatus;
+    paymentStatus ||
+    bookingType;
 
 
   const totalBookings =
@@ -295,6 +339,12 @@ export default function AdminBookings() {
         "paid"
     ).length;
 
+  const quoteRequiredBookings =
+    bookings.filter(
+      (booking) =>
+        booking.quote_required
+    ).length;
+
 
   const summaryCards = [
     {
@@ -315,6 +365,11 @@ export default function AdminBookings() {
     {
       label: "Fully Paid",
       value: paidBookings,
+      icon: FiDollarSign,
+    },
+    {
+      label: "Quote Required",
+      value: quoteRequiredBookings,
       icon: FiDollarSign,
     },
   ];
@@ -429,7 +484,7 @@ export default function AdminBookings() {
           {/* =================================================
               SUMMARY CARDS
           ================================================== */}
-          <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-9 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
             {summaryCards.map(
               (item, index) => {
                 const Icon =
@@ -513,7 +568,7 @@ export default function AdminBookings() {
               )}
             </div>
 
-            <div className="grid gap-4 p-5 md:grid-cols-[1fr_200px_200px]">
+            <div className="grid gap-4 p-5 md:grid-cols-2 xl:grid-cols-[1fr_180px_200px_180px]">
               {/* Search */}
               <div className="relative">
                 <FiSearch
@@ -533,6 +588,31 @@ export default function AdminBookings() {
                   className="w-full border border-[#111111]/10 bg-[#f6f1e6]/35 py-3.5 pl-11 pr-4 text-sm text-[#111111] outline-none transition-colors placeholder:text-[#111111]/30 focus:border-[#c4a454]"
                 />
               </div>
+
+              {/* Booking Type */}
+              <select
+                value={
+                  bookingType
+                }
+                onChange={(e) =>
+                  setBookingType(
+                    e.target.value
+                  )
+                }
+                className="border border-[#111111]/10 bg-white px-4 py-3.5 text-sm text-[#111111] outline-none transition-colors focus:border-[#c4a454]"
+              >
+                <option value="">
+                  All Safari Types
+                </option>
+
+                <option value="regular-safari">
+                  Regular Safari
+                </option>
+
+                <option value="serve-and-safari">
+                  Serve & Safari
+                </option>
+              </select>
 
               {/* Booking Status */}
               <select
@@ -674,13 +754,14 @@ export default function AdminBookings() {
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[1180px]">
+                  <table className="w-full min-w-[1320px]">
                     <thead className="bg-[#111111]">
                       <tr>
                         {[
                           "Booking",
                           "Guest",
                           "Safari",
+                          "Type",
                           "Travel",
                           "Guests",
                           "Total",
@@ -770,6 +851,25 @@ export default function AdminBookings() {
                               </p>
                             </td>
 
+                            {/* Type */}
+                            <td className="px-5 py-5">
+                              <span
+                                className={`inline-block whitespace-nowrap px-3 py-1.5 text-[8px] font-bold uppercase tracking-[0.14em] ${typeClass(
+                                  booking.booking_type
+                                )}`}
+                              >
+                                {formatBookingType(
+                                  booking.booking_type
+                                )}
+                              </span>
+
+                              {booking.quote_required && (
+                                <p className="mt-2 text-[8px] font-bold uppercase tracking-[0.14em] text-[#9f8236]">
+                                  Quote Required
+                                </p>
+                              )}
+                            </td>
+
                             {/* Travel */}
                             <td className="px-5 py-5">
                               <div className="flex items-center gap-2 whitespace-nowrap text-xs text-[#111111]/60">
@@ -804,15 +904,21 @@ export default function AdminBookings() {
 
                             {/* Total */}
                             <td className="px-5 py-5">
-                              <p className="whitespace-nowrap font-serif text-lg text-[#111111]">
-                                {
-                                  booking.currency
-                                }{" "}
-                                {Number(
-                                  booking.total_amount ||
-                                    0
-                                ).toLocaleString()}
-                              </p>
+                              {booking.total_amount !==
+                              null ? (
+                                <p className="whitespace-nowrap font-serif text-lg text-[#111111]">
+                                  {
+                                    booking.currency
+                                  }{" "}
+                                  {Number(
+                                    booking.total_amount
+                                  ).toLocaleString()}
+                                </p>
+                              ) : (
+                                <span className="text-[8px] font-bold uppercase tracking-[0.15em] text-[#9f8236]">
+                                  Quote Required
+                                </span>
+                              )}
                             </td>
 
                             {/* Booking status */}
@@ -895,7 +1001,17 @@ export default function AdminBookings() {
                             }
                           </p>
 
-                          <h3 className="mt-2 font-serif text-2xl text-[#111111]">
+                          <span
+                            className={`mt-2 inline-block px-2.5 py-1.5 text-[7px] font-bold uppercase tracking-[0.14em] ${typeClass(
+                              booking.booking_type
+                            )}`}
+                          >
+                            {formatBookingType(
+                              booking.booking_type
+                            )}
+                          </span>
+
+                          <h3 className="mt-3 font-serif text-2xl text-[#111111]">
                             {booking
                               .customer
                               ?.name ||
@@ -968,13 +1084,12 @@ export default function AdminBookings() {
                           </span>
 
                           <p className="mt-2 text-xs font-semibold text-[#111111]">
-                            {
-                              booking.currency
-                            }{" "}
-                            {Number(
-                              booking.total_amount ||
-                                0
-                            ).toLocaleString()}
+                            {booking.total_amount !==
+                            null
+                              ? `${booking.currency} ${Number(
+                                  booking.total_amount
+                                ).toLocaleString()}`
+                              : "Quote Required"}
                           </p>
                         </div>
                       </div>

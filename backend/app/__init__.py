@@ -8,6 +8,10 @@ from app.routes.packages import packages_bp
 from app.routes.bookings import ( bookings_bp, admin_bookings_bp)
 from app.routes.payments import payments_bp
 from app.routes.admin_auth import ( admin_auth_bp )
+from app.routes.cloudinary_config import uploads_bp
+from app.models.serve_safari_booking_detail import (
+    ServeSafariBookingDetail,
+)
 
 import os
 from datetime import timedelta
@@ -57,7 +61,8 @@ def create_app():
  app.register_blueprint(payments_bp)
  app.register_blueprint(admin_bookings_bp)
  app.register_blueprint(admin_auth_bp)
-
+ app.register_blueprint(uploads_bp)
+ 
  @app.route("/")
  def index():
     try:
