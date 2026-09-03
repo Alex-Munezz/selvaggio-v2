@@ -16,7 +16,6 @@ import {
   FiMapPin,
   FiMessageCircle,
   FiNavigation,
-  FiPhoneCall,
   FiShield,
   FiTruck,
   FiUsers,

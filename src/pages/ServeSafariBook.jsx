@@ -147,7 +147,7 @@ export default function ServeSafariBook() {
   const [loading, setLoading] =
     useState(true);
 
-  const [error, setError] =
+  const [setError] =
     useState("");
 
   const [

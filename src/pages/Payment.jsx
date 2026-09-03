@@ -78,6 +78,7 @@ export default function Payment() {
 
   useEffect(() => {
     fetchPaymentSummary();
+ // eslint-disable-next-line
   }, [reference]);
 
   const currency = booking?.currency || "USD";
