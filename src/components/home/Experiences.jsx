@@ -1,12 +1,10 @@
 import { motion } from "framer-motion";
 import {
-  FiArrowUpRight,
   FiCamera,
   FiCompass,
   FiHeart,
   FiMap,
 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
 
 const experiences = [
   {
@@ -40,7 +38,6 @@ const experiences = [
 ];
 
 export default function Experiences() {
-  const navigate = useNavigate();
 
   return (
     <section className="bg-[#111111] px-6 py-24 text-white sm:py-32 lg:px-8 lg:py-40">
@@ -130,7 +127,7 @@ export default function Experiences() {
           <p className="max-w-md text-sm leading-7 text-white/40">
             Tell us what kind of adventure you're looking for and we'll help
             shape the journey around you.
-          </p> 
+          </p>
         </motion.div>
       </div>
     </section>
