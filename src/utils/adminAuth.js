@@ -3,7 +3,7 @@ const USER_KEY = "selvaggio_admin_user";
 
 export const API_URL =
   process.env.REACT_APP_API_URL ||
-  "http://localhost:5000";
+  "https://selvaggio-api.onrender.com";
 
 export const getAdminToken = () => {
   return localStorage.getItem(TOKEN_KEY);

@@ -69,7 +69,7 @@ export default function Book() {
         setPackagesError("");
 
         const response = await axios.get(
-          "http://127.0.0.1:5000/api/packages"
+          "https://selvaggio-api.onrender.com/api/packages"
         );
 
         const packageList = Array.isArray(
@@ -122,7 +122,7 @@ export default function Book() {
         setPricing(null);
 
         const response = await axios.post(
-          "http://127.0.0.1:5000/api/bookings/preview-price",
+          "https://selvaggio-api.onrender.com/api/bookings/preview-price",
           {
             package_id: Number(
               selectedPackageId
@@ -403,7 +403,7 @@ const maxPartySize = useMemo(() => {
       setSubmitError("");
 
       const response = await axios.post(
-        "http://127.0.0.1:5000/api/bookings",
+        "https://selvaggio-api.onrender.com/api/bookings",
         {
           customer_name:
             `${formData.firstName} ${formData.lastName}`.trim(),

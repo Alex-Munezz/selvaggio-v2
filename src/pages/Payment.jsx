@@ -58,7 +58,7 @@ export default function Payment() {
       setError("");
 
       const response = await axios.get(
-        `http://127.0.0.1:5000/api/payments/booking/${reference}`,
+        `https://selvaggio-api.onrender.com/api/payments/booking/${reference}`,
         {
           headers: accessHeaders,
         }
@@ -159,7 +159,7 @@ export default function Payment() {
       setSuccessMessage("");
 
       const response = await axios.post(
-        "http://127.0.0.1:5000/api/payments",
+        "https://selvaggio-api.onrender.com/api/payments",
         {
           booking_reference: reference,
           amount: numericAmount,
@@ -199,7 +199,7 @@ export default function Payment() {
       setSuccessMessage("");
 
       const response = await axios.patch(
-        `http://127.0.0.1:5000/api/payments/${pendingPayment.id}/confirm`,
+        `https://selvaggio-api.onrender.com/api/payments/${pendingPayment.id}/confirm`,
         {
           access_token: accessToken,
         },

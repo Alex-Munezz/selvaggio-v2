@@ -32,7 +32,7 @@ export default function Packages() {
         setError("");
 
         const response = await fetch(
-          "http://127.0.0.1:5000/api/packages"
+          "https://selvaggio-api.onrender.com/api/packages"
         );
 
         if (!response.ok) {
