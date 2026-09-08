@@ -131,19 +131,6 @@ export default function Experiences() {
             Tell us what kind of adventure you're looking for and we'll help
             shape the journey around you.
           </p>
-
-          <button
-            type="button"
-            onClick={() => navigate("/experiences")}
-            className="group inline-flex w-fit items-center gap-3 bg-[#c4a454] px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-black transition-all duration-300 hover:bg-[#e6d69a]"
-          >
-            Discover Our Experiences
-
-            <FiArrowUpRight
-              size={17}
-              className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-            />
-          </button>
         </motion.div>
       </div>
     </section>
