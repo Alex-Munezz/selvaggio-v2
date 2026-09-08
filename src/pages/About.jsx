@@ -3,7 +3,6 @@ import {
   FiArrowRight,
   FiCompass,
   FiHeart,
-  FiMapPin,
   FiShield,
   FiTruck,
   FiUsers,
@@ -11,7 +10,6 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import guestsImage from "../assets/guests.JPG";
-import maraImage from "../assets/mara.JPG";
 import amboseliImage from "../assets/amboseli.jpg";
 
 const values = [
