@@ -114,16 +114,6 @@ export default function Experiences() {
                 <p className="max-w-xl text-sm leading-7 text-white/50 transition-colors duration-300 group-hover:text-white/70">
                   {experience.description}
                 </p>
-
-                {/* Arrow button */}
-                <button
-                  type="button"
-                  onClick={() => navigate("/experiences")}
-                  aria-label={`Explore ${experience.title}`}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white/60 transition-all duration-300 group-hover:border-[#c4a454] group-hover:bg-[#c4a454] group-hover:text-black"
-                >
-                  <FiArrowUpRight size={18} />
-                </button>
               </motion.div>
             );
           })}
