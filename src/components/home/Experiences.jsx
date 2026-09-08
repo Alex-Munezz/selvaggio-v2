@@ -130,7 +130,7 @@ export default function Experiences() {
           <p className="max-w-md text-sm leading-7 text-white/40">
             Tell us what kind of adventure you're looking for and we'll help
             shape the journey around you.
-          </p>
+          </p> 
         </motion.div>
       </div>
     </section>
